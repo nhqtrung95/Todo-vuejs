@@ -11,8 +11,9 @@
 </template>
 
 <script>
-import TodoNavigation from '@/components/TodoNavigation';
-import TodoCategory from '@/components/TodoCategory';
+import TodoNavigation from '@/components/Navigation';
+import TodoCategory from '@/components/Category';
+import axios from 'axios'
 
 const status = ['Todo', 'OnGoing', 'Done'];
 const items = [
@@ -36,6 +37,10 @@ export default {
       status,
       items
     }
+  },
+  created: function() {
+    axios.get('https://guarded-spire-32978.herokuapp.com/public/items')
+    .then(res => console.log(res));
   },
   methods: {
     getItemsViaStatus: function (status) {

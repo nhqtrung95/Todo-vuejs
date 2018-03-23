@@ -11,13 +11,12 @@
 </template>
 
 <script>
-import TodoItem from '@/components/TodoItem'
+import TodoItem from '@/components/Item'
 
 export default {
   name: 'TodoCategory',
   props: ['status', 'items'],
   components: { TodoItem }
-
 }
 </script>
 
