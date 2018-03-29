@@ -1,11 +1,11 @@
 <template>
-    <li>{{item.id + ". " + item.content }}</li>
+    <li v-dropzone>{{ item.name }}</li>
 </template>
 
 <script>
 export default {
   name: 'TodoItem',
-  props: ['item']
+  props: ['item'],
 }
 </script>
 
@@ -17,7 +17,7 @@ li {
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 	margin:  10px;
 	border-radius: 3px;
-	cursor: move;
+	cursor: pointer;
     width: 90%;
     text-align: left;
 }

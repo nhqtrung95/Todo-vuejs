@@ -1,71 +1,56 @@
 <template>
   <div id="app">
-    <todo-navigation v-on:submitForm="addNewItem"></todo-navigation>
+    <todo-navigation @submitForm="addNewItem"></todo-navigation>
     <div class="container-fluid">
       <div class="row">
-        <todo-category v-for="status in status" :key="status" :status="status" :items="getItemsViaStatus(status)"></todo-category>
+        <todo-category v-for="(status, index) in status" :key="status" :status="{id: index, name: status}" :items="getItemsViaStatus(index)" @dropOn="updateItem"></todo-category>
       </div>
     </div>
-    
+    <todo-trash @dropOn="deleteItem"></todo-trash>
   </div>
 </template>
 
 <script>
 import TodoNavigation from '@/components/Navigation';
 import TodoCategory from '@/components/Category';
-import axios from 'axios'
-
+import TodoTrash from '@/components/Trash';
 const status = ['Todo', 'OnGoing', 'Done'];
-const items = [
-  {
-    id: 1,
-    content: 'Todo App',
-    status: 'Todo'
-  },
-  {
-    id: 2,
-    content: 'Home Automation',
-    status: 'OnGoing'
-  }
-]
 
 export default {
   name: 'App',
-  components: { TodoNavigation, TodoCategory },
+  components: { TodoNavigation, TodoCategory, TodoTrash },
   data: function () {
     return {
       status,
-      items
+      items: []
     }
   },
   created: function() {
-    axios.get('https://guarded-spire-32978.herokuapp.com/public/items')
-    .then(res => console.log(res));
+    this.$http.get(this.$serverURL)
+      .then(res => this.items = res.data);
+  },
+  updated: function() {
+    this.$http.get(this.$serverURL)
+      .then(res => this.items = res.data);
   },
   methods: {
-    getItemsViaStatus: function (status) {
+    getItemsViaStatus: function(stt) {
       return this.items.filter(function(item) {
-        return item['status'] === status;
+        return item['idCategory'] - 1 === stt;
       })
     },
-    addNewItem: function (item) {
-      console.log(item);
-      if (item.content) {
-        item['status'] = 'Todo';
-        item['id'] = this.maxId + 1;
-      }
-      this.items.push(item);
-    }
-  },
-  computed: {
-    maxId: function () {
-      let max = 0;
-      this.items.forEach(function (item) {
-        if (item.id > max) {
-          max = item.id;
-        }
-      })
-      return max;
+    addNewItem: function(item) {
+      item['idCategory'] = 1;
+      this.$http.post(this.$serverURL, item)
+        .then(res => console.log(res))
+    },
+    updateItem: function(item) {
+      this.$http.put(this.$serverURL + '/' + item.id, item)
+        .then(res => console.log(res));
+    },
+    deleteItem: function(item){
+      this.$http.delete(this.$serverURL + '/' + item.id)
+      .then(res => console.log(res));
     }
   }
 }

@@ -4,7 +4,7 @@
 
 <script>
 export default {
-    name: 'Navigation',
+    name: 'TodoNavigation',
     data: function () {
         return {
             todoContent: ""
@@ -12,7 +12,7 @@ export default {
     },
     methods: {
         submit: function () {
-            this.$emit('submitForm', {content: this.todoContent});
+            this.$emit('submitForm', {name: this.todoContent});
             this.todoContent = "";
         }
     }
